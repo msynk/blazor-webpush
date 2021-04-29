@@ -1,0 +1,65 @@
+﻿@page "/push"
+@inject HttpClient Http
+@inject IJSRuntime JsRuntime
+
+<h3>WebPush</h3>
+
+<hr />
+
+<h4>1. Generate Keypair</h4>
+<div>try <a href="https://tools.reactpwa.com/vapid">https://tools.reactpwa.com/vapid</a> or similar tools, and store the result.</div>
+
+<hr />
+
+<h4>2. Request Web Push Subscription</h4>
+<button @onclick="Subscribe">Request Subscribtion</button>
+<div>Endpoint: @Subscription.EndPoint</div>
+<div>P256dh: @Subscription.P256dh</div>
+<div>Auth: @Subscription.Auth</div>
+
+<hr />
+
+<h4>3. Send Subscription to server</h4>
+<button @onclick="SendToServer">Send To Server</button>
+
+<hr />
+
+<h4>All Subscriptions:</h4>
+@foreach (var sub in AllSubscriptions)
+{
+    <div>Endpoint: @sub.EndPoint</div>
+    <button @onclick="() => PushNotification(sub)">Push Notification</button>
+    <div>--------------------------------------------</div>
+}
+
+@code {
+    private NotificationSubscription Subscription { get; set; } = new NotificationSubscription();
+    private List<NotificationSubscription> AllSubscriptions { get; set; } = new List<NotificationSubscription>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSubscriptions();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Subscribe()
+    {
+        Subscription = await JsRuntime.InvokeAsync<NotificationSubscription>("BlazorWebPush.requestSubscription");
+    }
+
+    private async Task SendToServer()
+    {
+        await Http.PostAsJsonAsync<NotificationSubscription>("WebPush", Subscription);
+        await GetSubscriptions();
+    }
+
+    private async Task GetSubscriptions()
+    {
+        AllSubscriptions = await Http.GetFromJsonAsync<List<NotificationSubscription>>("WebPush");
+    }
+
+    private async Task PushNotification(NotificationSubscription sub)
+    {
+        await Http.PutAsJsonAsync<NotificationSubscription>("WebPush", sub);
+    }
+}
