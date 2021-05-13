@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <!--<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>-->
+    <PackageId>BlazorWebPush</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>msynk</Authors>
+    <PackageDescription>This package adds nothing :)</PackageDescription>
+    <RepositoryUrl>https://github.com/msynk/blazor-webpush</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
