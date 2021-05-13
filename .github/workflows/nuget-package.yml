@@ -17,6 +17,4 @@ jobs:
     - name: Pack
       run: dotnet pack src/BlazorWebPush/Client/BlazorWebPush.Client.csproj --output .
     - name: Push
-      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/msynk/index.json --api-key ${GITHUB_TOKEN}
-      env:
-        GITHUB_TOKEN: ${{ secrets.PACKAGE_PAT }}
+      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/msynk/index.json --api-key ${{secrets.PACKAGE_PAT}}
