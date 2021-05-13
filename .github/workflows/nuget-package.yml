@@ -1,0 +1,22 @@
+name: Nuget Package
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Pack
+      run: dotnet pack src/BlazorWebPush/Client/BlazorWebPush.Client.csproj --output .
+    - name: Push
+      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/msynk/index.json --api-key ${GITHUB_TOKEN}
+      env:
+        GITHUB_TOKEN: ${{ secrets.PACKAGE_PAT }}
